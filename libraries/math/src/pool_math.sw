@@ -39,8 +39,8 @@ pub fn get_amount_out(
     asset_in: AssetId,
     stable_fee: u64,
     volatile_fee: u64,
-) -> u64 {
-    let amount_out: u256 = if is_stable(pool_id) {
+) -> u256 {
+    if is_stable(pool_id) {
         let (pow_decimals_0, pow_decimals_1) = (pow_decimals(pool.decimals_0), pow_decimals(pool.decimals_1));
         let xy: u256 = k(
             true,
@@ -68,8 +68,7 @@ pub fn get_amount_out(
             (pool.reserve_1, pool.reserve_0)
         };
         amount_in_with_fee.as_u256() * reserve_out.as_u256() / (reserve_in.as_u256() + amount_in_with_fee.as_u256())
-    };
-    u64::try_from(amount_out).unwrap()
+    }
 }
 
 pub fn get_amounts_out(
@@ -106,7 +105,7 @@ pub fn get_amounts_out(
         } else {
             pool_id.0
         };
-        amounts.push((amount_out, asset_out));
+        amounts.push((u64::try_from(amount_out).unwrap(), asset_out));
         i += 1;
     }
     amounts
@@ -147,6 +146,7 @@ fn k(
     }
 }
 
+// TODO: combine with `k` above?
 fn f(x_0: u256, y: u256) -> u256 {
     x_0 * (y * y / ONE_E_18 * y / ONE_E_18) / ONE_E_18 + (x_0 * x_0 / ONE_E_18 * x_0 / ONE_E_18) * y / ONE_E_18
 }
@@ -208,4 +208,13 @@ fn test_pow_decimals() {
     assert_eq(pow_decimals(7), 10000000);
     assert_eq(pow_decimals(8), 100000000);
     assert_eq(pow_decimals(9), 1000000000);
+}
+
+#[test]
+fn test_calculate_fee() {
+    assert_eq(calculate_fee(10, 1), 1);
+    assert_eq(calculate_fee(10000, 1), 1);
+    assert_eq(calculate_fee(20000, 1), 2);
+    assert_eq(calculate_fee(20000, 10), 20);
+    assert_eq(calculate_fee(20001, 10), 20); // TODO: should be 21?
 }
