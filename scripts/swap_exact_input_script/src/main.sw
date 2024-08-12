@@ -21,7 +21,10 @@ fn main(
 
     let amounts_out = get_amounts_out(AMM_CONTRACT_ID, amount_in, asset_in, pools);
     let last_amount_out = amounts_out.get(amounts_out.len() - 1).unwrap();
-    require(last_amount_out.0 >= amount_out_min, "Insufficient output amount");
+    require(
+        last_amount_out.0 >= amount_out_min,
+        "Insufficient output amount",
+    );
 
     transfer(Identity::ContractId(AMM_CONTRACT_ID), asset_in, amount_in);
     let amm = abi(MiraAMM, AMM_CONTRACT_ID.into());
@@ -30,8 +33,16 @@ fn main(
     while i < pools.len() {
         let pool_id = pools.get(i).unwrap();
         let (amount_out, asset_out) = amounts_out.get(i + 1).unwrap();
-        let to = if i == pools.len() - 1 { recipient } else { Identity::ContractId(AMM_CONTRACT_ID) };
-        let (amount_0_out, amount_1_out) = if asset_out == pool_id.0 { (amount_out, 0) } else { (0, amount_out) };
+        let to = if i == pools.len() - 1 {
+            recipient
+        } else {
+            Identity::ContractId(AMM_CONTRACT_ID)
+        };
+        let (amount_0_out, amount_1_out) = if asset_out == pool_id.0 {
+            (amount_out, 0)
+        } else {
+            (0, amount_out)
+        };
         amm.swap(pool_id, amount_0_out, amount_1_out, to, Bytes::new());
         i += 1;
     }

@@ -1,7 +1,7 @@
 script;
 
 use interfaces::{data_structures::{Asset, PoolId}, mira_amm::MiraAMM};
-use math::utils::get_deposit_amounts;
+use math::pool_math::get_deposit_amounts;
 use utils::blockchain_utils::check_deadline;
 use std::asset::transfer;
 

@@ -6,3 +6,4 @@ name = "math"
 
 [dependencies]
 interfaces = { path = "../interfaces" }
+utils = { path = "../utils" }
