@@ -32,6 +32,7 @@ source = "member"
 dependencies = [
     "interfaces",
     "std",
+    "utils",
 ]
 
 [[package]]

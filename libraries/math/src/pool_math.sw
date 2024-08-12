@@ -32,42 +32,38 @@ pub fn get_deposit_amounts(
     }
 }
 
+fn adjust(amount: u256, pow_decimals: u256) -> u256 {
+    amount * ONE_E_18 / pow_decimals
+}
+
 pub fn get_amount_out(
-    pool_id: PoolId,
-    pool: PoolMetadata,
-    amount_in: u64,
-    asset_in: AssetId,
-    stable_fee: u64,
-    volatile_fee: u64,
+    is_stable: bool,
+    reserve_in: u256,
+    reserve_out: u256,
+    pow_decimals_in: u256,
+    pow_decimals_out: u256,
+    input_amount: u256,
 ) -> u256 {
-    if is_stable(pool_id) {
-        let (pow_decimals_0, pow_decimals_1) = (pow_decimals(pool.decimals_0), pow_decimals(pool.decimals_1));
+    if is_stable {
         let xy: u256 = k(
             true,
-            pool.reserve_0,
-            pool.reserve_1,
-            pow_decimals_0,
-            pow_decimals_1,
+            reserve_in,
+            reserve_out,
+            pow_decimals_in,
+            pow_decimals_out,
         );
-        let _reserve_0: u256 = pool.reserve_0.as_u256() * ONE_E_18 / pow_decimals_0;
-        let _reserve_1: u256 = pool.reserve_1.as_u256() * ONE_E_18 / pow_decimals_1;
-        let (reserve_in, reserve_out, decimals_in, decimals_out) = if asset_in == pool_id.0 {
-            (_reserve_0, _reserve_1, pow_decimals_0, pow_decimals_1)
-        } else {
-            (_reserve_1, _reserve_0, pow_decimals_1, pow_decimals_0)
-        };
-        let amount_in_with_fee = adjust_for_fee(amount_in, stable_fee);
-        let amount_in_adjusted: u256 = amount_in_with_fee.as_u256() * ONE_E_18 / decimals_in;
-        let y: u256 = reserve_out - get_y(amount_in_adjusted + reserve_in, xy, reserve_out);
-        y * decimals_out / ONE_E_18
+
+        let amount_in_adjusted = adjust(input_amount, pow_decimals_in);
+        let reserve_in_adjusted = adjust(reserve_in, pow_decimals_in);
+        let reserve_out_adjusted = adjust(reserve_out, pow_decimals_out);
+        let y = reserve_out_adjusted - get_y(
+            amount_in_adjusted + reserve_in_adjusted,
+            xy,
+            reserve_out_adjusted,
+        );
+        y * pow_decimals_out / ONE_E_18
     } else {
-        let amount_in_with_fee = adjust_for_fee(amount_in, volatile_fee);
-        let (reserve_in, reserve_out) = if asset_in == pool_id.0 {
-            (pool.reserve_0, pool.reserve_1)
-        } else {
-            (pool.reserve_1, pool.reserve_0)
-        };
-        amount_in_with_fee.as_u256() * reserve_out.as_u256() / (reserve_in.as_u256() + amount_in_with_fee.as_u256())
+        input_amount * reserve_out / (reserve_in + input_amount)
     }
 }
 
@@ -88,18 +84,41 @@ pub fn get_amounts_out(
     let mut i = 0;
     while (i < pools.len()) {
         let pool_id = pools.get(i).unwrap();
-        let pool = amm.pool_metadata(pool_id);
-        require(pool.is_some(), "Pool not present");
+        let pool_opt = amm.pool_metadata(pool_id);
+        require(pool_opt.is_some(), "Pool not present");
+        let pool = pool_opt.unwrap();
         let (amount_in, asset_in) = amounts.get(i).unwrap();
-        let amount_out = get_amount_out(
-            pool_id,
-            pool
-                .unwrap(),
-            amount_in,
-            asset_in,
-            stable_fee,
-            volatile_fee,
-        );
+        let fee = if is_stable(pool_id) {
+            stable_fee
+        } else {
+            volatile_fee
+        };
+        let amount_out = if asset_in == pool_id.0 {
+            get_amount_out(
+                is_stable(pool_id),
+                pool.reserve_0
+                    .as_u256(),
+                pool.reserve_1
+                    .as_u256(),
+                pow_decimals(pool.decimals_0),
+                pow_decimals(pool.decimals_1),
+                adjust_for_fee(amount_in, fee)
+                    .as_u256(),
+            )
+        } else {
+            get_amount_out(
+                is_stable(pool_id),
+                pool.reserve_1
+                    .as_u256(),
+                pool.reserve_0
+                    .as_u256(),
+                pow_decimals(pool.decimals_1),
+                pow_decimals(pool.decimals_0),
+                adjust_for_fee(amount_in, fee)
+                    .as_u256(),
+            )
+        };
+
         let asset_out = if pool_id.0 == asset_in {
             pool_id.1
         } else {
@@ -130,19 +149,19 @@ fn pow_decimals(decimals: u8) -> u256 {
 
 fn k(
     is_stable: bool,
-    x: u64,
-    y: u64,
+    x: u256,
+    y: u256,
     pow_decimals_x: u256,
     pow_decimals_y: u256,
 ) -> u256 {
     if (is_stable) {
-        let _x: u256 = x.as_u256() * ONE_E_18 / pow_decimals_x;
-        let _y: u256 = y.as_u256() * ONE_E_18 / pow_decimals_y;
+        let _x: u256 = x * ONE_E_18 / pow_decimals_x;
+        let _y: u256 = y * ONE_E_18 / pow_decimals_y;
         let _a: u256 = (_x * _y) / ONE_E_18;
         let _b: u256 = ((_x * _x) / ONE_E_18 + (_y * _y) / ONE_E_18);
         return _a * _b / ONE_E_18; // x3y+y3x >= k
     } else {
-        return x.as_u256() * y.as_u256(); // xy >= k
+        return x * y; // xy >= k
     }
 }
 
