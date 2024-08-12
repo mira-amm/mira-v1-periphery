@@ -6,4 +6,5 @@ members = [
   "./scripts/add_liquidity_script",
   "./scripts/create_pool_and_add_liquidity_script",
   "./scripts/remove_liquidity_script",
+  "./scripts/swap_exact_input_script",
 ]

@@ -29,7 +29,10 @@ dependencies = ["std"]
 [[package]]
 name = "math"
 source = "member"
-dependencies = ["std"]
+dependencies = [
+    "interfaces",
+    "std",
+]
 
 [[package]]
 name = "remove_liquidity_script"
@@ -45,6 +48,16 @@ dependencies = [
 name = "std"
 source = "git+https://github.com/fuellabs/sway?tag=v0.61.2#e1b1c2bee73e0ba825e07736cefa6c0abd079595"
 dependencies = ["core"]
+
+[[package]]
+name = "swap_exact_input_script"
+source = "member"
+dependencies = [
+    "interfaces",
+    "math",
+    "std",
+    "utils",
+]
 
 [[package]]
 name = "utils"
