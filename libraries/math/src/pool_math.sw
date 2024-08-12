@@ -67,6 +67,37 @@ pub fn get_amount_out(
     }
 }
 
+pub fn get_amount_in(
+    is_stable: bool,
+    reserve_in: u256,
+    reserve_out: u256,
+    pow_decimals_in: u256,
+    pow_decimals_out: u256,
+    output_amount: u256,
+) -> u256 {
+    if is_stable {
+        let xy: u256 = k(
+            true,
+            reserve_in,
+            reserve_out,
+            pow_decimals_in,
+            pow_decimals_out,
+        );
+
+        let amount_out_adjusted = adjust(output_amount, pow_decimals_in);
+        let reserve_in_adjusted = adjust(reserve_in, pow_decimals_in);
+        let reserve_out_adjusted = adjust(reserve_out, pow_decimals_out);
+        let y = get_y(
+            reserve_out_adjusted - amount_out_adjusted,
+            xy,
+            reserve_in_adjusted,
+        ) - reserve_in_adjusted;
+        y * pow_decimals_in / ONE_E_18
+    } else {
+        output_amount * reserve_in / (reserve_out - output_amount) + 1
+    }
+}
+
 pub fn get_amounts_out(
     amm_contract: ContractId,
     amount_in: u64,
@@ -102,7 +133,7 @@ pub fn get_amounts_out(
                     .as_u256(),
                 pow_decimals(pool.decimals_0),
                 pow_decimals(pool.decimals_1),
-                adjust_for_fee(amount_in, fee)
+                subtract_fee(amount_in, fee)
                     .as_u256(),
             )
         } else {
@@ -114,7 +145,7 @@ pub fn get_amounts_out(
                     .as_u256(),
                 pow_decimals(pool.decimals_1),
                 pow_decimals(pool.decimals_0),
-                adjust_for_fee(amount_in, fee)
+                subtract_fee(amount_in, fee)
                     .as_u256(),
             )
         };
@@ -126,6 +157,70 @@ pub fn get_amounts_out(
         };
         amounts.push((u64::try_from(amount_out).unwrap(), asset_out));
         i += 1;
+    }
+    amounts
+}
+
+pub fn get_amounts_in(
+    amm_contract: ContractId,
+    amount_out: u64,
+    asset_out: AssetId,
+    pools: Vec<PoolId>,
+) -> Vec<(u64, AssetId)> {
+    require(pools.len() >= 1, "Router: INVALID_PATH");
+
+    let amm = abi(MiraAMM, amm_contract.into());
+    let (lp_fee_volatile, lp_fee_stable, protocol_fee_volatile, protocol_fee_stable) = amm.fees();
+    let (stable_fee, volatile_fee) = (lp_fee_stable + protocol_fee_stable, lp_fee_volatile + protocol_fee_volatile);
+
+    let mut amounts: Vec<(u64, AssetId)> = Vec::new();
+    amounts.push((amount_out, asset_out));
+    let mut i = pools.len() - 1;
+    while (i >= 0) {
+        let pool_id = pools.get(i).unwrap();
+        let pool_opt = amm.pool_metadata(pool_id);
+        require(pool_opt.is_some(), "Pool not present");
+        let pool = pool_opt.unwrap();
+        let (amount_out, asset_out) = amounts.get(pools.len() - 1 - i).unwrap();
+        let fee = if is_stable(pool_id) {
+            stable_fee
+        } else {
+            volatile_fee
+        };
+        let amount_in = if asset_out == pool_id.0 {
+            get_amount_in(
+                is_stable(pool_id),
+                pool.reserve_1
+                    .as_u256(),
+                pool.reserve_0
+                    .as_u256(),
+                pow_decimals(pool.decimals_1),
+                pow_decimals(pool.decimals_0),
+                amount_out
+                    .as_u256(),
+            )
+        } else {
+            get_amount_in(
+                is_stable(pool_id),
+                pool.reserve_0
+                    .as_u256(),
+                pool.reserve_1
+                    .as_u256(),
+                pow_decimals(pool.decimals_0),
+                pow_decimals(pool.decimals_1),
+                amount_out
+                    .as_u256(),
+            )
+        };
+
+        let asset_in = if pool_id.0 == asset_out {
+            pool_id.1
+        } else {
+            pool_id.0
+        };
+        let amount_in_with_fee = add_fee(u64::try_from(amount_in).unwrap(), fee);
+        amounts.push((amount_in_with_fee, asset_in));
+        i -= 1;
     }
     amounts
 }
@@ -210,8 +305,12 @@ fn calculate_fee(amount: u64, fee: u64) -> u64 {
     max(1, fee)
 }
 
-fn adjust_for_fee(amount: u64, fee: u64) -> u64 {
+fn subtract_fee(amount: u64, fee: u64) -> u64 {
     amount - calculate_fee(amount, fee)
+}
+
+fn add_fee(amount: u64, fee: u64) -> u64 {
+    amount + calculate_fee(amount, fee)
 }
 
 // Tests

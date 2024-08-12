@@ -18,3 +18,8 @@ pub fn get_lp_asset(pool_id: PoolId) -> (b256, AssetId) {
 pub fn is_stable(pool_id: PoolId) -> bool {
     pool_id.2
 }
+
+// TODO:
+pub fn reverse_vec<T>(vec: Vec<T>) -> Vec<T> {
+    vec
+}
