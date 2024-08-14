@@ -1,0 +1,12 @@
+[workspace.package]
+name = "mira-v1-periphery"
+version = "0.1.0"
+edition = "2021"
+
+[workspace]
+resolver = "2"
+members = ["./scripts/add_liquidity_script", "./test-harness"]
+
+[workspace.dependencies]
+fuels = { version = "0.62.0", features = ["fuel-core-lib"] }
+tokio = { version = "1.12", features = ["rt", "macros"] }
