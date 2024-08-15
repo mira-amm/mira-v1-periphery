@@ -148,7 +148,7 @@ pub mod scripts {
         },
     };
 
-    pub const MAXIMUM_INPUT_AMOUNT: u64 = 1_000_000;
+    pub const MAXIMUM_INPUT_AMOUNT: u64 = 100_000;
 
     async fn transaction_input_coin(
         provider: &Provider,
@@ -217,23 +217,3 @@ pub mod scripts {
         }
     }
 }
-
-// pub mod add_liquidity {
-//     use std::str::FromStr;
-
-//     use fuels::{
-//         accounts::wallet::WalletUnlocked,
-//         types::{Bits256, ContractId},
-//     };
-
-//     use super::*;
-//     use crate::data_structures::{MiraAMMContract, TransactionParameters};
-
-//     pub fn add_liquidity(amm: &MiraAMM<WalletUnlocked>, wallet: &WalletUnlocked) {
-//         // let configurables = AddLiquidityScriptConfigurables::default()
-//         //     .with_AMM_CONTRACT_ID(ContractId::from_str(&amm.id.to_string()).unwrap())
-//         //     .unwrap();
-//         let script_instance =
-//             AddLiquidityScript::new(wallet, ATOMIC_ADD_LIQUIDITY_SCRIPT_BINARY_PATH);
-//     }
-// }

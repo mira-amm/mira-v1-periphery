@@ -1,6 +1,7 @@
 use std::cmp::min;
 use std::str::FromStr;
 
+use fuels::accounts::provider::Provider;
 use fuels::accounts::wallet::WalletUnlocked;
 use fuels::types::ContractId;
 use test_harness::data_structures::{
@@ -11,7 +12,7 @@ use test_harness::interface::mock::{add_token, deploy_mock_token_contract};
 use test_harness::interface::mock::{get_sub_id, mint_tokens};
 use test_harness::interface::scripts::transaction_inputs_outputs;
 use test_harness::interface::AddLiquidityScriptConfigurables;
-use test_harness::interface::{AddLiquidityScript, PoolMetadata};
+use test_harness::interface::{AddLiquidityScript, MockToken, PoolMetadata};
 use test_harness::math::{initial_liquidity, proportional_value};
 use test_harness::paths::ADD_LIQUIDITY_SCRIPT_BINARY_PATH;
 use test_harness::setup::common::{deploy_amm, setup_wallet_and_provider};
@@ -21,7 +22,7 @@ use test_harness::utils::common::order_sub_ids;
 const MINIMUM_LIQUIDITY: u64 = 1000;
 
 pub fn preview_add_liquidity(pool_metadata: PoolMetadata, asset_0_in: u64, asset_1_in: u64) -> u64 {
-    let total_liquidity = pool_metadata.reserve_0 + pool_metadata.reserve_1;
+    let total_liquidity = pool_metadata.liquidity.amount;
     let added_liquidity: u64 = if total_liquidity == 0 {
         let init_liquidity = initial_liquidity(asset_0_in, asset_1_in);
 
@@ -35,11 +36,11 @@ pub fn preview_add_liquidity(pool_metadata: PoolMetadata, asset_0_in: u64, asset
     added_liquidity
 }
 
-pub async fn setup(// deposit_amounts: (u64, u64),
-    // liquidity: u64,
-) -> (
+pub async fn setup() -> (
     AddLiquidityScript<WalletUnlocked>,
     MiraAMMContract,
+    MockToken<WalletUnlocked>,
+    Provider,
     PoolId,
     WalletUnlocked,
     TransactionParameters,
@@ -97,6 +98,8 @@ pub async fn setup(// deposit_amounts: (u64, u64),
     (
         script_instance,
         amm,
+        token_contract,
+        provider,
         pool_id,
         wallet,
         transaction_parameters,
