@@ -1,15 +1,25 @@
 use crate::utils::setup;
 
+// TODO fix
 #[tokio::test]
 #[ignore]
-#[should_panic(expected = "NoLiquidityAdded")]
+// #[should_panic(expected = "CannotAddLessThanMinimumLiquidity")]
 pub async fn adds_liquidity_with_equal_deposit_amounts() {
-    let (script_instance, amm, pool_id, wallet, transaction_parameters, deadline) = setup().await;
+    let (
+        script_instance,
+        amm,
+        _token_contract,
+        _provider,
+        pool_id,
+        wallet,
+        transaction_parameters,
+        deadline,
+    ) = setup().await;
 
     let amount_0_desired = 1000;
     let amount_1_desired = 1000;
 
-    script_instance
+    let added_liquidity = script_instance
         .main(
             pool_id,
             amount_0_desired,
@@ -24,5 +34,8 @@ pub async fn adds_liquidity_with_equal_deposit_amounts() {
         .with_outputs(transaction_parameters.outputs)
         .call()
         .await
-        .unwrap();
+        .unwrap()
+        .value;
+
+    println!("{}", added_liquidity.amount);
 }
