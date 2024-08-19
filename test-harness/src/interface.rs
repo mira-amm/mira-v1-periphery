@@ -13,6 +13,10 @@ abigen!(
         name = "AddLiquidityScript",
         abi = "scripts/add_liquidity_script/out/debug/add_liquidity_script-abi.json"
     ),
+    Script(
+        name = "RemoveLiquidityScript",
+        abi = "scripts/remove_liquidity_script/out/debug/remove_liquidity_script-abi.json"
+    ),
     Contract(
         name = "MiraAMM",
         abi = "fixtures/mira-amm/mira_amm_contract-abi.json"

@@ -10,9 +10,9 @@ pub fn check_deadline(deadline: u32) {
 }
 
 /// Builds and returns an LP sub id and asset id for the provided pool id
-pub fn get_lp_asset(pool_id: PoolId) -> (b256, AssetId) {
+pub fn get_lp_asset(contract_id: ContractId, pool_id: PoolId) -> (b256, AssetId) {
     let lp_sub_id = sha256(pool_id);
-    (lp_sub_id, AssetId::new(ContractId::this(), lp_sub_id))
+    (lp_sub_id, AssetId::new(contract_id, lp_sub_id))
 }
 
 pub fn is_stable(pool_id: PoolId) -> bool {

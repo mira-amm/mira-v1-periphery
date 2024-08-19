@@ -4555,6 +4555,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7a66a03ae7c801facd77a29370b4faec201768915ac14a721ba36f20bc9c209b"
 
 [[package]]
+name = "remove-liquidity-script"
+version = "0.1.0"
+dependencies = [
+ "fuels",
+ "test-harness",
+ "tokio",
+]
+
+[[package]]
 name = "reqwest"
 version = "0.11.27"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -5382,6 +5391,7 @@ name = "test-harness"
 version = "0.1.0"
 dependencies = [
  "fuels",
+ "sha2 0.10.8",
  "tokio",
 ]
 

@@ -20,7 +20,7 @@ fn main(
     check_deadline(deadline);
     let amm = abi(MiraAMM, AMM_CONTRACT_ID.into());
 
-    let (_, lp_asset_id) = get_lp_asset(pool_id);
+    let (_, lp_asset_id) = get_lp_asset(AMM_CONTRACT_ID, pool_id);
     let (amount_0, amount_1) = amm.burn {
         asset_id: lp_asset_id.into(),
         coins: liquidity,

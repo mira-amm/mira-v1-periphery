@@ -13,6 +13,13 @@ pub struct MiraAMMContract {
     pub instance: MiraAMM<WalletUnlocked>,
 }
 
+#[derive(Debug)]
+pub struct WalletBalances {
+    pub asset_a: u64,
+    pub asset_b: u64,
+    pub liquidity_pool_asset: u64,
+}
+
 pub struct WalletAssetConfiguration {
     pub number_of_assets: u64,
     pub coins_per_asset: u64,
