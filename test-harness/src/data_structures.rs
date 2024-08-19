@@ -11,14 +11,6 @@ const AMOUNT_PER_COIN: u64 = 1_000_000;
 const COINS_PER_ASSET: u64 = 100;
 pub const NUMBER_OF_ASSETS: u64 = 5;
 
-pub fn build_pool_id(asset_a: AssetId, asset_b: AssetId) -> PoolId {
-    if asset_a < asset_b {
-        (asset_a, asset_b)
-    } else {
-        (asset_b, asset_a)
-    }
-}
-
 pub struct MiraAMMContract {
     pub id: ContractId,
     pub instance: MiraAMM<WalletUnlocked>,
