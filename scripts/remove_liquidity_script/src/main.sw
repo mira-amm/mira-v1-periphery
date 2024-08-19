@@ -21,12 +21,10 @@ fn main(
     let amm = abi(MiraAMM, AMM_CONTRACT_ID.into());
 
     let (_, lp_asset_id) = get_lp_asset(pool_id);
-    transfer(
-        Identity::ContractId(AMM_CONTRACT_ID),
-        lp_asset_id,
-        liquidity,
-    );
-    let (amount_0, amount_1) = amm.burn(pool_id, recipient);
+    let (amount_0, amount_1) = amm.burn {
+        asset_id: lp_asset_id.into(),
+        coins: liquidity,
+    }(pool_id, recipient);
 
     require(amount_0 >= amount_0_min, "Insufficient amount");
     require(amount_1 >= amount_1_min, "Insufficient amount");
