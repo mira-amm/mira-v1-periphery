@@ -36,8 +36,14 @@ pub mod mock {
     ) -> ContractId {
         let (token_contract_id, token_contract) = mock::deploy_mock_token_contract(wallet).await;
 
-        mock::add_token(&token_contract, name_0, symbol_0, decimals_0).await.tx_id.unwrap();
-        mock::add_token(&token_contract, name_1, symbol_1, decimals_1).await.tx_id.unwrap();
+        mock::add_token(&token_contract, name_0, symbol_0, decimals_0)
+            .await
+            .tx_id
+            .unwrap();
+        mock::add_token(&token_contract, name_1, symbol_1, decimals_1)
+            .await
+            .tx_id
+            .unwrap();
 
         token_contract_id
     }
