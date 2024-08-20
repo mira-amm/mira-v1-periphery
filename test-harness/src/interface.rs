@@ -1,4 +1,12 @@
-use fuels::{prelude::abigen, programs::call_utils::TxDependencyExtension};
+use fuels::{
+    prelude::*,
+    programs::call_response::FuelCallResponse,
+    types::{input::Input, output::Output, Bits256},
+};
+
+use crate::paths::MOCK_TOKEN_CONTRACT_BINARY_PATH;
+
+use crate::types::PoolId;
 
 abigen!(
     Script(
@@ -16,14 +24,6 @@ abigen!(
 );
 
 pub mod amm {
-    use fuels::{
-        accounts::wallet::WalletUnlocked,
-        programs::call_response::FuelCallResponse,
-        types::{Bits256, ContractId},
-    };
-
-    use crate::types::PoolId;
-
     use super::*;
 
     pub async fn create_pool(
@@ -64,17 +64,6 @@ pub mod amm {
 }
 
 pub mod mock {
-    use fuels::{
-        accounts::wallet::WalletUnlocked,
-        programs::{
-            call_response::FuelCallResponse,
-            contract::{Contract, LoadConfiguration},
-        },
-        types::{transaction::TxPolicies, AssetId, Bits256, ContractId},
-    };
-
-    use crate::paths::MOCK_TOKEN_CONTRACT_BINARY_PATH;
-
     use super::*;
 
     pub async fn deploy_mock_token_contract(
@@ -137,83 +126,39 @@ pub mod mock {
 }
 
 pub mod scripts {
-    use crate::data_structures::TransactionParameters;
-
-    use fuels::{
-        accounts::{provider::Provider, wallet::WalletUnlocked},
-        prelude::ResourceFilter,
-        types::{
-            bech32::Bech32Address, coin_type::CoinType, input::Input, output::Output, Address,
-            AssetId,
-        },
-    };
+    use super::*;
 
     pub const MAXIMUM_INPUT_AMOUNT: u64 = 100_000;
 
-    async fn transaction_input_coin(
-        provider: &Provider,
-        from: &Bech32Address,
-        asset_id: AssetId,
-        amount: u64,
-    ) -> Vec<Input> {
-        let coins = &provider
-            .get_spendable_resources(ResourceFilter {
-                from: from.clone(),
-                asset_id: Some(asset_id),
-                amount,
-                ..Default::default()
-            })
-            .await
-            .unwrap();
-
-        let input_coins: Vec<Input> = coins
-            .iter()
-            .map(|coin| match coin {
-                CoinType::Coin(_) => Input::resource_signed(coin.clone()),
-                _ => panic!("Coin type does not match"),
-            })
-            .collect();
-
-        input_coins
-    }
-
-    fn transaction_output_variable() -> Output {
-        Output::Variable {
-            amount: 0,
-            to: Address::zeroed(),
-            asset_id: AssetId::default(),
-        }
-    }
-
-    pub async fn transaction_inputs_outputs(
+    pub async fn get_transaction_inputs_outputs(
         wallet: &WalletUnlocked,
-        provider: &Provider,
-        assets: &[AssetId],
-        amounts: Option<&Vec<u64>>,
-    ) -> TransactionParameters {
-        let mut input_coins: Vec<Input> = vec![]; // capacity depends on wallet resources
-        let mut output_variables: Vec<Output> = Vec::with_capacity(assets.len());
+        assets: &Vec<(AssetId, u64)>,
+        variable_outputs: &Vec<(AssetId, Address)>,
+    ) -> (Vec<Input>, Vec<Output>) {
+        let mut inputs: Vec<Input> = vec![]; // capacity depends on wallet resources
+        let mut outputs: Vec<Output> = Vec::with_capacity(assets.len());
 
-        for (asset_index, asset) in assets.iter().enumerate() {
-            input_coins.extend(
-                transaction_input_coin(
-                    provider,
-                    wallet.address(),
-                    *asset,
-                    if let Some(amounts_) = amounts {
-                        *amounts_.get(asset_index).unwrap()
-                    } else {
-                        MAXIMUM_INPUT_AMOUNT
-                    },
-                )
-                .await,
-            );
-            output_variables.push(transaction_output_variable());
+        for (asset, amount) in assets {
+            let asset_inputs = wallet
+                .get_asset_inputs_for_amount(*asset, *amount)
+                .await
+                .unwrap();
+            inputs.extend(asset_inputs);
+            outputs.push(Output::Change {
+                asset_id: *asset,
+                amount: 0,
+                to: wallet.address().into(),
+            });
         }
 
-        TransactionParameters {
-            inputs: input_coins,
-            outputs: output_variables,
+        for (asset, to) in variable_outputs {
+            outputs.push(Output::Variable {
+                asset_id: *asset,
+                amount: 0,
+                to: *to,
+            });
         }
+
+        (inputs, outputs)
     }
 }

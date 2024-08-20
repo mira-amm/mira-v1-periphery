@@ -1,7 +1,4 @@
-use fuels::{
-    prelude::{AssetId, ContractId, WalletUnlocked},
-    types::{input::Input, output::Output},
-};
+use fuels::prelude::{AssetId, ContractId, WalletUnlocked};
 
 use super::interface::MiraAMM;
 
@@ -14,11 +11,6 @@ pub const NUMBER_OF_ASSETS: u64 = 5;
 pub struct MiraAMMContract {
     pub id: ContractId,
     pub instance: MiraAMM<WalletUnlocked>,
-}
-
-pub struct TransactionParameters {
-    pub inputs: Vec<Input>,
-    pub outputs: Vec<Output>,
 }
 
 pub struct WalletAssetConfiguration {
