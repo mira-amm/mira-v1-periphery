@@ -1139,7 +1139,7 @@
         "type": 32,
         "typeArguments": null
       },
-      "offset": 64736
+      "offset": 65176
     },
     {
       "name": "LP_FEE_STABLE",
@@ -1148,7 +1148,7 @@
         "type": 32,
         "typeArguments": null
       },
-      "offset": 64728
+      "offset": 65168
     }
   ]
 }
