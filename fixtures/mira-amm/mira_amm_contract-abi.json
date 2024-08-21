@@ -117,6 +117,11 @@
           "typeArguments": null
         },
         {
+          "name": "CannotAddLessThanMinimumLiquidity",
+          "type": 0,
+          "typeArguments": null
+        },
+        {
           "name": "CurveInvariantViolation",
           "type": 2,
           "typeArguments": null
@@ -184,6 +189,16 @@
           "name": "LPTokenHashCollision",
           "type": 0,
           "typeArguments": null
+        },
+        {
+          "name": "NotAdmin",
+          "type": 0,
+          "typeArguments": null
+        },
+        {
+          "name": "ProtocolFeesAreTooHigh",
+          "type": 0,
+          "typeArguments": null
         }
       ],
       "typeParameters": null
@@ -203,7 +218,9 @@
           "typeArguments": null
         }
       ],
-      "typeParameters": [12]
+      "typeParameters": [
+        12
+      ]
     },
     {
       "typeId": 11,
@@ -439,7 +456,9 @@
           "typeArguments": null
         }
       ],
-      "typeParameters": [12]
+      "typeParameters": [
+        12
+      ]
     },
     {
       "typeId": 25,
@@ -511,7 +530,9 @@
           "typeArguments": null
         }
       ],
-      "typeParameters": [12]
+      "typeParameters": [
+        12
+      ]
     },
     {
       "typeId": 28,
@@ -556,7 +577,9 @@
       "attributes": [
         {
           "name": "storage",
-          "arguments": ["read"]
+          "arguments": [
+            "read"
+          ]
         }
       ]
     },
@@ -583,7 +606,9 @@
       "attributes": [
         {
           "name": "storage",
-          "arguments": ["read"]
+          "arguments": [
+            "read"
+          ]
         }
       ]
     },
@@ -610,7 +635,9 @@
       "attributes": [
         {
           "name": "storage",
-          "arguments": ["read"]
+          "arguments": [
+            "read"
+          ]
         }
       ]
     },
@@ -625,7 +652,9 @@
       "attributes": [
         {
           "name": "storage",
-          "arguments": ["read"]
+          "arguments": [
+            "read"
+          ]
         }
       ]
     },
@@ -652,7 +681,9 @@
       "attributes": [
         {
           "name": "storage",
-          "arguments": ["read"]
+          "arguments": [
+            "read"
+          ]
         }
       ]
     },
@@ -682,7 +713,10 @@
         },
         {
           "name": "storage",
-          "arguments": ["read", "write"]
+          "arguments": [
+            "read",
+            "write"
+          ]
         }
       ]
     },
@@ -723,7 +757,10 @@
       "attributes": [
         {
           "name": "storage",
-          "arguments": ["read", "write"]
+          "arguments": [
+            "read",
+            "write"
+          ]
         }
       ]
     },
@@ -735,7 +772,14 @@
         "type": 3,
         "typeArguments": null
       },
-      "attributes": null
+      "attributes": [
+        {
+          "name": "storage",
+          "arguments": [
+            "read"
+          ]
+        }
+      ]
     },
     {
       "inputs": [
@@ -759,7 +803,10 @@
       "attributes": [
         {
           "name": "storage",
-          "arguments": ["read", "write"]
+          "arguments": [
+            "read",
+            "write"
+          ]
         }
       ]
     },
@@ -786,7 +833,9 @@
       "attributes": [
         {
           "name": "storage",
-          "arguments": ["read"]
+          "arguments": [
+            "read"
+          ]
         }
       ]
     },
@@ -807,7 +856,37 @@
       "attributes": [
         {
           "name": "storage",
-          "arguments": ["read"]
+          "arguments": [
+            "read"
+          ]
+        }
+      ]
+    },
+    {
+      "inputs": [
+        {
+          "name": "volatile_fee",
+          "type": 29,
+          "typeArguments": null
+        },
+        {
+          "name": "stable_fee",
+          "type": 29,
+          "typeArguments": null
+        }
+      ],
+      "name": "set_protocol_fees",
+      "output": {
+        "name": "",
+        "type": 0,
+        "typeArguments": null
+      },
+      "attributes": [
+        {
+          "name": "storage",
+          "arguments": [
+            "write"
+          ]
         }
       ]
     },
@@ -852,7 +931,10 @@
         },
         {
           "name": "storage",
-          "arguments": ["read", "write"]
+          "arguments": [
+            "read",
+            "write"
+          ]
         }
       ]
     }
@@ -924,7 +1006,7 @@
         "type": 29,
         "typeArguments": null
       },
-      "offset": 55712
+      "offset": 58056
     },
     {
       "name": "LP_FEE_STABLE",
@@ -933,34 +1015,16 @@
         "type": 29,
         "typeArguments": null
       },
-      "offset": 55704
+      "offset": 58048
     },
     {
-      "name": "PROTOCOL_FEE_VOLATILE",
-      "configurableType": {
-        "name": "",
-        "type": 29,
-        "typeArguments": null
-      },
-      "offset": 55768
-    },
-    {
-      "name": "PROTOCOL_FEE_STABLE",
-      "configurableType": {
-        "name": "",
-        "type": 29,
-        "typeArguments": null
-      },
-      "offset": 55760
-    },
-    {
-      "name": "PROTOCOL_FEES_COLLECTOR",
+      "name": "ADMIN",
       "configurableType": {
         "name": "",
         "type": 8,
         "typeArguments": []
       },
-      "offset": 55720
+      "offset": 58008
     }
   ]
 }
