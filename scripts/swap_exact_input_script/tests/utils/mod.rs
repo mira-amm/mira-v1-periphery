@@ -1,9 +1,9 @@
 use std::str::FromStr;
 
 use fuels::accounts::wallet::WalletUnlocked;
-use fuels::types::ContractId;
+use fuels::types::{AssetId, ContractId, Identity};
 use test_harness::data_structures::{MiraAMMContract, WalletAssetConfiguration};
-use test_harness::interface::amm::create_pool;
+use test_harness::interface::amm::{create_pool, initialize_ownership};
 use test_harness::interface::mock::{
     add_token, deploy_mock_token_contract, get_sub_id, mint_tokens,
 };
@@ -23,10 +23,12 @@ pub async fn setup() -> (
     PoolId,
     WalletUnlocked,
     u32,
+    (AssetId, AssetId, AssetId)
 ) {
     let (wallet, _asset_ids, provider) =
         setup_wallet_and_provider(&WalletAssetConfiguration::default()).await;
     let amm = deploy_amm(&wallet).await;
+    initialize_ownership(&amm.instance, Identity::Address(wallet.address().into())).await;
     let (token_contract_id, token_contract) = deploy_mock_token_contract(&wallet).await;
 
     let token_0_id = add_token(&token_contract, "TOKEN_A".to_string(), "TKA".to_string(), 9)
@@ -38,6 +40,9 @@ pub async fn setup() -> (
     let token_2_id = add_token(&token_contract, "TOKEN_C".to_string(), "TKC".to_string(), 9)
         .await
         .value;
+    let mut all_assets = vec![token_0_id, token_1_id, token_2_id];
+    all_assets.sort();
+    let [token_0_id, token_1_id, token_2_id] = all_assets[..] else { todo!() };
 
     let token_0_sub_id = get_sub_id(&token_contract, token_0_id).await.value.unwrap();
     let token_1_sub_id = get_sub_id(&token_contract, token_1_id).await.value.unwrap();
@@ -101,5 +106,6 @@ pub async fn setup() -> (
         pool_id_1,
         wallet,
         deadline,
+        (token_0_id, token_1_id, token_2_id)
     )
 }

@@ -32,7 +32,20 @@ abigen!(
 );
 
 pub mod amm {
+    use fuels::types::Identity;
     use super::*;
+
+    pub async fn initialize_ownership(
+        contract: &MiraAMM<WalletUnlocked>,
+        owner: Identity,
+    ) -> FuelCallResponse<()> {
+        contract
+            .methods()
+            .transfer_ownership(owner)
+            .call()
+            .await
+            .unwrap()
+    }
 
     pub async fn create_pool(
         contract: &MiraAMM<WalletUnlocked>,
