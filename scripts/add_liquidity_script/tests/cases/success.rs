@@ -1,8 +1,9 @@
 use crate::utils::setup;
 use fuels::accounts::ViewOnlyAccount;
-use fuels::prelude::{Address, AssetId};
+use fuels::programs::call_utils::TxDependencyExtension;
 use test_harness::interface::amm::pool_metadata;
 use test_harness::interface::scripts::get_transaction_inputs_outputs;
+use test_harness::utils::common::MINIMUM_LIQUIDITY;
 
 #[tokio::test]
 pub async fn adds_liquidity_with_equal_deposit_amounts() {
@@ -10,15 +11,11 @@ pub async fn adds_liquidity_with_equal_deposit_amounts() {
 
     let amount_0_desired = 10000;
     let amount_1_desired = 10000;
-    let expected_liquidity = 9000; // 10000 - 1000(minimal liquidity)
+    let expected_liquidity = 10000 - MINIMUM_LIQUIDITY;
 
     let (inputs, outputs) = get_transaction_inputs_outputs(
         &wallet,
         &vec![(pool_id.0, amount_0_desired), (pool_id.1, amount_1_desired)],
-        &vec![
-            (AssetId::default(), Address::zeroed()),
-            (AssetId::default(), Address::zeroed()),
-        ],
     )
     .await;
 
@@ -35,6 +32,7 @@ pub async fn adds_liquidity_with_equal_deposit_amounts() {
         .with_contracts(&[&amm.instance])
         .with_inputs(inputs)
         .with_outputs(outputs)
+        .append_variable_outputs(2)
         .call()
         .await
         .unwrap()
@@ -49,15 +47,11 @@ async fn adds_liquidity_to_make_a_more_valuable() {
 
     let amount_0_desired = 40000;
     let amount_1_desired = 10000;
-    let expected_liquidity = 19000; // 20000 - 1000(minimal liquidity)
+    let expected_liquidity = 20000 - MINIMUM_LIQUIDITY;
 
     let (inputs, outputs) = get_transaction_inputs_outputs(
         &wallet,
         &vec![(pool_id.0, amount_0_desired), (pool_id.1, amount_1_desired)],
-        &vec![
-            (AssetId::default(), Address::zeroed()),
-            (AssetId::default(), Address::zeroed()),
-        ],
     )
     .await;
 
@@ -74,6 +68,7 @@ async fn adds_liquidity_to_make_a_more_valuable() {
         .with_contracts(&[&amm.instance])
         .with_inputs(inputs)
         .with_outputs(outputs)
+        .append_variable_outputs(2)
         .call()
         .await
         .unwrap()
@@ -88,15 +83,11 @@ async fn adds_liquidity_to_make_b_more_valuable() {
 
     let amount_0_desired = 10000;
     let amount_1_desired = 40000;
-    let expected_liquidity = 19000; // 20000 - 1000(minimal liquidity)
+    let expected_liquidity = 20000 - MINIMUM_LIQUIDITY;
 
     let (inputs, outputs) = get_transaction_inputs_outputs(
         &wallet,
         &vec![(pool_id.0, amount_0_desired), (pool_id.1, amount_1_desired)],
-        &vec![
-            (AssetId::default(), Address::zeroed()),
-            (AssetId::default(), Address::zeroed()),
-        ],
     )
     .await;
 
@@ -113,6 +104,7 @@ async fn adds_liquidity_to_make_b_more_valuable() {
         .with_contracts(&[&amm.instance])
         .with_inputs(inputs)
         .with_outputs(outputs)
+        .append_variable_outputs(2)
         .call()
         .await
         .unwrap()
@@ -130,10 +122,6 @@ async fn adds_further_liquidity_without_extra_deposit_when_a_is_more_valuable() 
     let (inputs, outputs) = get_transaction_inputs_outputs(
         &wallet,
         &vec![(pool_id.0, amount_0_desired), (pool_id.1, amount_1_desired)],
-        &vec![
-            (AssetId::default(), Address::zeroed()),
-            (AssetId::default(), Address::zeroed()),
-        ],
     )
     .await;
     // adds initial liquidity
@@ -150,6 +138,7 @@ async fn adds_further_liquidity_without_extra_deposit_when_a_is_more_valuable() 
         .with_contracts(&[&amm.instance])
         .with_inputs(inputs)
         .with_outputs(outputs)
+        .append_variable_outputs(2)
         .call()
         .await
         .unwrap();
@@ -162,7 +151,6 @@ async fn adds_further_liquidity_without_extra_deposit_when_a_is_more_valuable() 
     let (inputs, outputs) = get_transaction_inputs_outputs(
         &wallet,
         &vec![(pool_id.0, amount_0_desired), (pool_id.1, amount_1_desired)],
-        &vec![(AssetId::default(), Address::zeroed())],
     )
     .await;
 
@@ -179,6 +167,7 @@ async fn adds_further_liquidity_without_extra_deposit_when_a_is_more_valuable() 
         .with_contracts(&[&amm.instance])
         .with_inputs(inputs)
         .with_outputs(outputs)
+        .append_variable_outputs(1)
         .call()
         .await
         .unwrap()

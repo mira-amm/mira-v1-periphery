@@ -137,7 +137,6 @@ pub mod scripts {
     pub async fn get_transaction_inputs_outputs(
         wallet: &WalletUnlocked,
         assets: &Vec<(AssetId, u64)>,
-        variable_outputs: &Vec<(AssetId, Address)>,
     ) -> (Vec<Input>, Vec<Output>) {
         let mut inputs: Vec<Input> = vec![]; // capacity depends on wallet resources
         let mut outputs: Vec<Output> = Vec::with_capacity(assets.len());
@@ -154,15 +153,6 @@ pub mod scripts {
                 to: wallet.address().into(),
             });
         }
-
-        for (asset, to) in variable_outputs {
-            outputs.push(Output::Variable {
-                asset_id: *asset,
-                amount: 0,
-                to: *to,
-            });
-        }
-
         (inputs, outputs)
     }
 }

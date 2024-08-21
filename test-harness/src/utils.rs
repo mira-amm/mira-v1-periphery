@@ -1,26 +1,26 @@
+use fuels::{
+    accounts::{wallet::WalletUnlocked, ViewOnlyAccount},
+    types::{AssetId, Bits256, Bytes32, ContractId},
+};
+use sha2::{Digest, Sha256};
+
+use crate::data_structures::WalletBalances;
+
 pub mod common {
-    use fuels::{
-        accounts::{wallet::WalletUnlocked, ViewOnlyAccount},
-        types::{AssetId, Bits256, Bytes32, ContractId},
-    };
-    use sha2::{Digest, Sha256};
-
-    use crate::data_structures::WalletBalances;
-
+    use super::*;
+    use crate::types::PoolId;
+    use std::io::Write;
     pub const MINIMUM_LIQUIDITY: u64 = 1000;
 
-    pub fn to_9_decimal(num: u64) -> u64 {
-        num * 1_000_000_000
-    }
-
-    pub async fn wallet_balances_for_pool_asset(
+    pub async fn pool_assets_balance(
         wallet: &WalletUnlocked,
-        asset_pair: &(AssetId, AssetId),
-        pool_asset_sub_id: &AssetId,
+        pool_id: &PoolId,
+        contract_id: ContractId,
     ) -> WalletBalances {
-        let asset_a = wallet.get_asset_balance(&asset_pair.0).await.unwrap();
-        let asset_b = wallet.get_asset_balance(&asset_pair.1).await.unwrap();
-        let liquidity_pool_asset = wallet.get_asset_balance(&pool_asset_sub_id).await.unwrap();
+        let asset_a = wallet.get_asset_balance(&pool_id.0).await.unwrap();
+        let asset_b = wallet.get_asset_balance(&pool_id.1).await.unwrap();
+        let lp_asset = get_lp_asset_id(contract_id, pool_id);
+        let liquidity_pool_asset = wallet.get_asset_balance(&lp_asset).await.unwrap();
         WalletBalances {
             asset_a,
             asset_b,
@@ -28,17 +28,27 @@ pub mod common {
         }
     }
 
-    pub fn get_asset_id(sub_id: Bytes32, contract: ContractId) -> AssetId {
+    pub fn get_lp_asset_id(contract_id: ContractId, pool_id: &PoolId) -> AssetId {
+        let sub_id = get_pool_sub_id(pool_id);
+        get_contract_asset_id(sub_id, contract_id)
+    }
+
+    pub fn get_contract_asset_id(sub_id: Bytes32, contract: ContractId) -> AssetId {
         let mut hasher = Sha256::new();
         hasher.update(*contract);
         hasher.update(*sub_id);
         AssetId::new(*Bytes32::from(<[u8; 32]>::from(hasher.finalize())))
     }
 
-    pub fn get_share_sub_id(asset_pair: &(AssetId, AssetId)) -> Bytes32 {
+    pub fn get_pool_sub_id(pool_id: &PoolId) -> Bytes32 {
         let mut hasher = Sha256::new();
-        hasher.update(*asset_pair.0);
-        hasher.update(*asset_pair.1);
+        hasher.update(*pool_id.0);
+        hasher.update(*pool_id.1);
+        if pool_id.2 {
+            hasher.write(&[1]).unwrap();
+        } else {
+            hasher.write(&[0]).unwrap();
+        }
         Bytes32::from(<[u8; 32]>::from(hasher.finalize()))
     }
 

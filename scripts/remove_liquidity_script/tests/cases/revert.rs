@@ -1,59 +1,55 @@
 use crate::utils::setup;
 use fuels::programs::call_utils::TxDependencyExtension;
-use test_harness::utils::common::to_9_decimal;
-use test_harness::wallet::get_transaction_inputs_outputs;
+use test_harness::interface::scripts::get_transaction_inputs_outputs;
+use test_harness::utils::common::MINIMUM_LIQUIDITY;
 
 #[tokio::test]
-#[ignore]
 #[should_panic(expected = "ZeroInputAmount")]
-async fn removes_all_liquidity_passing_exact_a_and_b_values() {
+async fn panics_on_removing_zero_liquidity() {
     let (
         add_liquidity_script_instance,
         remove_liquidity_script_instance,
         amm,
-        _token_contract,
-        _provider,
         pool_id,
         wallet,
-        transaction_parameters,
         deadline,
     ) = setup().await;
 
-    let token_0_amount: u64 = to_9_decimal(1);
-    let token_1_amount: u64 = to_9_decimal(1);
+    let amount_0_desired: u64 = 1_000_000_000;
+    let amount_1_desired: u64 = 1_000_000_000;
+    let expected_liquidity: u64 = 1_000_000_000 - MINIMUM_LIQUIDITY;
+
+    let (inputs, outputs) = get_transaction_inputs_outputs(
+        &wallet,
+        &vec![(pool_id.0, amount_0_desired), (pool_id.1, amount_1_desired)],
+    )
+    .await;
 
     // adds initial liquidity
     let added_liquidity = add_liquidity_script_instance
         .main(
             pool_id,
-            token_0_amount,
-            token_1_amount,
+            amount_0_desired,
+            amount_1_desired,
             0,
             0,
             wallet.address().into(),
             deadline,
         )
         .with_contracts(&[&amm.instance])
-        .with_inputs(transaction_parameters.inputs)
-        .with_outputs(transaction_parameters.outputs)
+        .with_inputs(inputs)
+        .with_outputs(outputs)
+        .append_variable_outputs(2)
         .call()
         .await
         .unwrap()
         .value;
 
-    let transaction_parameters = get_transaction_inputs_outputs(
-        &wallet,
-        &vec![added_liquidity.id],
-        &vec![added_liquidity.amount],
-    )
-    .await;
+    assert_eq!(added_liquidity.amount, expected_liquidity);
 
     remove_liquidity_script_instance
         .main(pool_id, 0, 0, 0, wallet.address().into(), deadline)
         .with_contracts(&[&amm.instance])
-        .with_inputs(transaction_parameters.0)
-        .with_outputs(transaction_parameters.1)
-        .append_variable_outputs(2)
         .call()
         .await
         .unwrap();
