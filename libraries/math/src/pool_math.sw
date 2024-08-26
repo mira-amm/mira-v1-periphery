@@ -175,13 +175,13 @@ pub fn get_amounts_in(
 
     let mut amounts: Vec<(u64, AssetId)> = Vec::new();
     amounts.push((amount_out, asset_out));
-    let mut i = pools.len() - 1;
-    while (i >= 0) {
-        let pool_id = pools.get(i).unwrap();
+    let mut i = 0;
+    while (i < pools.len()) {
+        let pool_id = pools.get(pools.len() - 1 - i).unwrap();
         let pool_opt = amm.pool_metadata(pool_id);
         require(pool_opt.is_some(), "Pool not present");
         let pool = pool_opt.unwrap();
-        let (amount_out, asset_out) = amounts.get(pools.len() - 1 - i).unwrap();
+        let (amount_out, asset_out) = amounts.get(i).unwrap();
         let fee = if is_stable(pool_id) {
             stable_fee
         } else {
@@ -220,7 +220,7 @@ pub fn get_amounts_in(
         };
         let amount_in_with_fee = add_fee(u64::try_from(amount_in).unwrap(), fee);
         amounts.push((amount_in_with_fee, asset_in));
-        i -= 1;
+        i += 1;
     }
     amounts
 }
