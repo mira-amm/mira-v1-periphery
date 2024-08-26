@@ -5663,6 +5663,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "swap-exact-output-script"
+version = "0.1.0"
+dependencies = [
+ "fuels",
+ "test-harness",
+ "tokio",
+]
+
+[[package]]
 name = "syn"
 version = "1.0.109"
 source = "registry+https://github.com/rust-lang/crates.io-index"

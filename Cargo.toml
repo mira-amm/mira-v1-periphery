@@ -11,6 +11,7 @@ members = [
     "./test-harness",
     "./scripts/remove_liquidity_script",
     "./scripts/swap_exact_input_script",
+    "./scripts/swap_exact_output_script",
 ]
 
 [workspace.dependencies]

@@ -21,6 +21,10 @@ abigen!(
         name = "SwapExactInputScript",
         abi = "scripts/swap_exact_input_script/out/debug/swap_exact_input_script-abi.json"
     ),
+    Script(
+        name = "SwapExactOutputScript",
+        abi = "scripts/swap_exact_output_script/out/debug/swap_exact_output_script-abi.json"
+    ),
     Contract(
         name = "MiraAMM",
         abi = "fixtures/mira-amm/mira_amm_contract-abi.json"
