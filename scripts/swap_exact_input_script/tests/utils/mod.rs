@@ -8,7 +8,8 @@ use test_harness::interface::mock::{
     add_token, deploy_mock_token_contract, get_sub_id, mint_tokens,
 };
 use test_harness::interface::{
-    AddLiquidityScript, AddLiquidityScriptConfigurables, SwapExactInputScript, SwapExactInputScriptConfigurables,
+    AddLiquidityScript, AddLiquidityScriptConfigurables, SwapExactInputScript,
+    SwapExactInputScriptConfigurables,
 };
 use test_harness::paths::{ADD_LIQUIDITY_SCRIPT_BINARY_PATH, SWAP_EXACT_INPUT_SCRIPT_BINARY_PATH};
 use test_harness::setup::common::{deploy_amm, setup_wallet_and_provider};
@@ -23,7 +24,7 @@ pub async fn setup() -> (
     PoolId,
     WalletUnlocked,
     u32,
-    (AssetId, AssetId, AssetId)
+    (AssetId, AssetId, AssetId),
 ) {
     let (wallet, _asset_ids, provider) =
         setup_wallet_and_provider(&WalletAssetConfiguration::default()).await;
@@ -42,7 +43,9 @@ pub async fn setup() -> (
         .value;
     let mut all_assets = vec![token_0_id, token_1_id, token_2_id];
     all_assets.sort();
-    let [token_0_id, token_1_id, token_2_id] = all_assets[..] else { todo!() };
+    let [token_0_id, token_1_id, token_2_id] = all_assets[..] else {
+        todo!()
+    };
 
     let token_0_sub_id = get_sub_id(&token_contract, token_0_id).await.value.unwrap();
     let token_1_sub_id = get_sub_id(&token_contract, token_1_id).await.value.unwrap();
@@ -106,6 +109,6 @@ pub async fn setup() -> (
         pool_id_1,
         wallet,
         deadline,
-        (token_0_id, token_1_id, token_2_id)
+        (token_0_id, token_1_id, token_2_id),
     )
 }

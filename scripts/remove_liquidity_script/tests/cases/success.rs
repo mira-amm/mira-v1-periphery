@@ -1,5 +1,5 @@
-use fuels::prelude::VariableOutputPolicy;
 use crate::utils::setup;
+use fuels::prelude::VariableOutputPolicy;
 use test_harness::interface::amm::pool_metadata;
 use test_harness::interface::scripts::get_transaction_inputs_outputs;
 use test_harness::interface::{Asset, BurnEvent};

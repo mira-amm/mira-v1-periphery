@@ -1,5 +1,5 @@
-use fuels::prelude::VariableOutputPolicy;
 use crate::utils::setup;
+use fuels::prelude::VariableOutputPolicy;
 use test_harness::interface::amm::pool_metadata;
 use test_harness::interface::scripts::get_transaction_inputs_outputs;
 use test_harness::utils::common::{pool_assets_balance, MINIMUM_LIQUIDITY};
@@ -14,7 +14,7 @@ async fn swap_between_two_volatile_tokens() {
         _,
         wallet,
         deadline,
-        (token_0_id, token_1_id, token_2_id)
+        (token_0_id, token_1_id, token_2_id),
     ) = setup().await;
 
     let amount_0_desired: u64 = 1_000_000;
@@ -23,7 +23,10 @@ async fn swap_between_two_volatile_tokens() {
 
     let (inputs, outputs) = get_transaction_inputs_outputs(
         &wallet,
-        &vec![(token_0_id, amount_0_desired), (token_1_id, amount_1_desired)],
+        &vec![
+            (token_0_id, amount_0_desired),
+            (token_1_id, amount_1_desired),
+        ],
     )
     .await;
 
@@ -52,11 +55,8 @@ async fn swap_between_two_volatile_tokens() {
     let token_0_to_swap = 1_000;
     let token_1_expected = 996;
 
-    let (inputs, outputs) = get_transaction_inputs_outputs(
-        &wallet,
-        &vec![(token_0_id, token_0_to_swap)],
-    )
-    .await;
+    let (inputs, outputs) =
+        get_transaction_inputs_outputs(&wallet, &vec![(token_0_id, token_0_to_swap)]).await;
 
     let wallet_balances_before = pool_assets_balance(&wallet, &pool_id, amm.id).await;
     let pool_metadata_before = pool_metadata(&amm.instance, pool_id).await.value.unwrap();
@@ -78,7 +78,13 @@ async fn swap_between_two_volatile_tokens() {
         .unwrap()
         .value;
 
-    assert_eq!(amounts_out, vec![(token_0_to_swap, token_0_id), (token_1_expected, token_1_id)]);
+    assert_eq!(
+        amounts_out,
+        vec![
+            (token_0_to_swap, token_0_id),
+            (token_1_expected, token_1_id)
+        ]
+    );
     let wallet_balances_after = pool_assets_balance(&wallet, &pool_id, amm.id).await;
     let pool_metadata_after = pool_metadata(&amm.instance, pool_id).await.value.unwrap();
 
@@ -110,7 +116,7 @@ async fn swap_between_three_volatile_tokens() {
         pool_id_1,
         wallet,
         deadline,
-        (token_0_id, token_1_id, token_2_id)
+        (token_0_id, token_1_id, token_2_id),
     ) = setup().await;
 
     let amount_0_desired: u64 = 1_000_000;
@@ -119,7 +125,10 @@ async fn swap_between_three_volatile_tokens() {
 
     let (inputs, outputs) = get_transaction_inputs_outputs(
         &wallet,
-        &vec![(token_0_id, amount_0_desired), (token_1_id, amount_1_desired)],
+        &vec![
+            (token_0_id, amount_0_desired),
+            (token_1_id, amount_1_desired),
+        ],
     )
     .await;
 
@@ -147,7 +156,10 @@ async fn swap_between_three_volatile_tokens() {
 
     let (inputs, outputs) = get_transaction_inputs_outputs(
         &wallet,
-        &vec![(token_1_id, amount_0_desired), (token_2_id, amount_1_desired)],
+        &vec![
+            (token_1_id, amount_0_desired),
+            (token_2_id, amount_1_desired),
+        ],
     )
     .await;
 
@@ -177,11 +189,8 @@ async fn swap_between_three_volatile_tokens() {
     let token_1_expected = 996;
     let token_2_expected = 992;
 
-    let (inputs, outputs) = get_transaction_inputs_outputs(
-        &wallet,
-        &vec![(token_0_id, token_0_to_swap)],
-    )
-    .await;
+    let (inputs, outputs) =
+        get_transaction_inputs_outputs(&wallet, &vec![(token_0_id, token_0_to_swap)]).await;
 
     let wallet_balances_0_before = pool_assets_balance(&wallet, &pool_id_0, amm.id).await;
     let wallet_balances_1_before = pool_assets_balance(&wallet, &pool_id_1, amm.id).await;
@@ -209,7 +218,14 @@ async fn swap_between_three_volatile_tokens() {
     let wallet_balances_0_after = pool_assets_balance(&wallet, &pool_id_0, amm.id).await;
     let wallet_balances_1_after = pool_assets_balance(&wallet, &pool_id_1, amm.id).await;
 
-    assert_eq!(amounts_out, vec![(token_0_to_swap, pool_id_0.0), (token_1_expected, pool_id_0.1), (token_2_expected, token_2_id)]);
+    assert_eq!(
+        amounts_out,
+        vec![
+            (token_0_to_swap, pool_id_0.0),
+            (token_1_expected, pool_id_0.1),
+            (token_2_expected, token_2_id)
+        ]
+    );
 
     assert_eq!(
         wallet_balances_0_after.asset_a,

@@ -32,8 +32,8 @@ abigen!(
 );
 
 pub mod amm {
-    use fuels::types::Identity;
     use super::*;
+    use fuels::types::Identity;
 
     pub async fn initialize_ownership(
         contract: &MiraAMM<WalletUnlocked>,
