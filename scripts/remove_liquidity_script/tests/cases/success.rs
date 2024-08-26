@@ -1,5 +1,5 @@
+use fuels::prelude::VariableOutputPolicy;
 use crate::utils::setup;
-use fuels::programs::call_utils::TxDependencyExtension;
 use test_harness::interface::amm::pool_metadata;
 use test_harness::interface::scripts::get_transaction_inputs_outputs;
 use test_harness::interface::{Asset, BurnEvent};
@@ -40,7 +40,7 @@ async fn removes_all_liquidity_passing_exact_a_and_b_values() {
         .with_contracts(&[&amm.instance])
         .with_inputs(inputs)
         .with_outputs(outputs)
-        .append_variable_outputs(2)
+        .with_variable_output_policy(VariableOutputPolicy::Exactly(2))
         .call()
         .await
         .unwrap()
@@ -66,7 +66,7 @@ async fn removes_all_liquidity_passing_exact_a_and_b_values() {
         .with_contracts(&[&amm.instance])
         .with_inputs(inputs)
         .with_outputs(outputs)
-        .append_variable_outputs(2)
+        .with_variable_output_policy(VariableOutputPolicy::Exactly(2))
         .call()
         .await
         .unwrap();
@@ -130,7 +130,7 @@ async fn removes_partial_liquidity() {
         .with_contracts(&[&amm.instance])
         .with_inputs(inputs)
         .with_outputs(outputs)
-        .append_variable_outputs(2)
+        .with_variable_output_policy(VariableOutputPolicy::Exactly(2))
         .call()
         .await
         .unwrap()
@@ -157,7 +157,7 @@ async fn removes_partial_liquidity() {
         .with_contracts(&[&amm.instance])
         .with_inputs(inputs)
         .with_outputs(outputs)
-        .append_variable_outputs(2)
+        .with_variable_output_policy(VariableOutputPolicy::Exactly(2))
         .call()
         .await
         .unwrap();

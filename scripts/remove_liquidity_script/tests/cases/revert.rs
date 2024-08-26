@@ -1,5 +1,5 @@
+use fuels::prelude::VariableOutputPolicy;
 use crate::utils::setup;
-use fuels::programs::call_utils::TxDependencyExtension;
 use test_harness::interface::scripts::get_transaction_inputs_outputs;
 use test_harness::utils::common::MINIMUM_LIQUIDITY;
 
@@ -39,7 +39,7 @@ async fn panics_on_removing_zero_liquidity() {
         .with_contracts(&[&amm.instance])
         .with_inputs(inputs)
         .with_outputs(outputs)
-        .append_variable_outputs(2)
+        .with_variable_output_policy(VariableOutputPolicy::Exactly(2))
         .call()
         .await
         .unwrap()

@@ -1,6 +1,6 @@
 use fuels::{
     prelude::*,
-    programs::call_response::FuelCallResponse,
+    programs::responses::CallResponse,
     types::{input::Input, output::Output, Bits256},
 };
 
@@ -55,7 +55,7 @@ pub mod amm {
         token_1_contract_id: ContractId,
         token_1_sub_id: Bits256,
         is_stable: bool,
-    ) -> FuelCallResponse<PoolId> {
+    ) -> CallResponse<PoolId> {
         contract
             .methods()
             .create_pool(
@@ -74,7 +74,7 @@ pub mod amm {
     pub async fn pool_metadata(
         contract: &MiraAMM<WalletUnlocked>,
         pool_id: PoolId,
-    ) -> FuelCallResponse<Option<PoolMetadata>> {
+    ) -> CallResponse<Option<PoolMetadata>> {
         contract
             .methods()
             .pool_metadata(pool_id)
@@ -110,7 +110,7 @@ pub mod mock {
         name: String,
         symbol: String,
         decimals: u8,
-    ) -> FuelCallResponse<AssetId> {
+    ) -> CallResponse<AssetId> {
         contract
             .methods()
             .add_token(name, symbol, decimals)
@@ -123,11 +123,11 @@ pub mod mock {
         contract: &MockToken<WalletUnlocked>,
         asset_id: AssetId,
         amount: u64,
-    ) -> FuelCallResponse<()> {
+    ) -> CallResponse<()> {
         contract
             .methods()
             .mint_tokens(asset_id, amount)
-            .append_variable_outputs(1)
+            .with_variable_output_policy(VariableOutputPolicy::Exactly(1))
             .call()
             .await
             .unwrap()
@@ -136,7 +136,7 @@ pub mod mock {
     pub async fn get_sub_id(
         contract: &MockToken<WalletUnlocked>,
         asset_id: AssetId,
-    ) -> FuelCallResponse<Option<Bits256>> {
+    ) -> CallResponse<Option<Bits256>> {
         contract
             .methods()
             .get_sub_id(asset_id)
@@ -160,7 +160,7 @@ pub mod scripts {
 
         for (asset, amount) in assets {
             let asset_inputs = wallet
-                .get_asset_inputs_for_amount(*asset, *amount)
+                .get_asset_inputs_for_amount(*asset, *amount, None)
                 .await
                 .unwrap();
             inputs.extend(asset_inputs);

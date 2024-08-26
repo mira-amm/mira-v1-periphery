@@ -1,6 +1,6 @@
 use crate::utils::setup;
 use fuels::accounts::ViewOnlyAccount;
-use fuels::programs::call_utils::TxDependencyExtension;
+use fuels::prelude::VariableOutputPolicy;
 use test_harness::interface::amm::pool_metadata;
 use test_harness::interface::scripts::get_transaction_inputs_outputs;
 use test_harness::utils::common::MINIMUM_LIQUIDITY;
@@ -32,7 +32,7 @@ pub async fn adds_liquidity_with_equal_deposit_amounts() {
         .with_contracts(&[&amm.instance])
         .with_inputs(inputs)
         .with_outputs(outputs)
-        .append_variable_outputs(2)
+        .with_variable_output_policy(VariableOutputPolicy::Exactly(2))
         .call()
         .await
         .unwrap()
@@ -68,7 +68,7 @@ async fn adds_liquidity_to_make_a_more_valuable() {
         .with_contracts(&[&amm.instance])
         .with_inputs(inputs)
         .with_outputs(outputs)
-        .append_variable_outputs(2)
+        .with_variable_output_policy(VariableOutputPolicy::Exactly(2))
         .call()
         .await
         .unwrap()
@@ -104,7 +104,7 @@ async fn adds_liquidity_to_make_b_more_valuable() {
         .with_contracts(&[&amm.instance])
         .with_inputs(inputs)
         .with_outputs(outputs)
-        .append_variable_outputs(2)
+        .with_variable_output_policy(VariableOutputPolicy::Exactly(2))
         .call()
         .await
         .unwrap()
@@ -138,7 +138,7 @@ async fn adds_further_liquidity_without_extra_deposit_when_a_is_more_valuable() 
         .with_contracts(&[&amm.instance])
         .with_inputs(inputs)
         .with_outputs(outputs)
-        .append_variable_outputs(2)
+        .with_variable_output_policy(VariableOutputPolicy::Exactly(2))
         .call()
         .await
         .unwrap();
@@ -167,7 +167,7 @@ async fn adds_further_liquidity_without_extra_deposit_when_a_is_more_valuable() 
         .with_contracts(&[&amm.instance])
         .with_inputs(inputs)
         .with_outputs(outputs)
-        .append_variable_outputs(1)
+        .with_variable_output_policy(VariableOutputPolicy::Exactly(1))
         .call()
         .await
         .unwrap()

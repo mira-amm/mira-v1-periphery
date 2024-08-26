@@ -1,118 +1,140 @@
 {
-  "encoding": "1",
-  "types": [
+  "programType": "contract",
+  "specVersion": "1",
+  "encodingVersion": "1",
+  "concreteTypes": [
     {
-      "typeId": 0,
       "type": "()",
-      "components": [],
-      "typeParameters": null
+      "concreteTypeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
     },
     {
-      "typeId": 1,
       "type": "b256",
-      "components": null,
-      "typeParameters": null
+      "concreteTypeId": "7c5ee1cecf5f8eacd1284feb5f0bf2bdea533a51e2f0c9aabe9236d335989f3b"
     },
     {
-      "typeId": 2,
-      "type": "enum Option",
-      "components": [
-        {
-          "name": "None",
-          "type": 0,
-          "typeArguments": null
-        },
-        {
-          "name": "Some",
-          "type": 3,
-          "typeArguments": null
-        }
-      ],
-      "typeParameters": [
-        3
+      "type": "enum std::option::Option<b256>",
+      "concreteTypeId": "0c2beb9013490c4f753f2757dfe2d8340b22ce3827d596d81d249b7038033cb6",
+      "metadataTypeId": 0,
+      "typeArguments": [
+        "7c5ee1cecf5f8eacd1284feb5f0bf2bdea533a51e2f0c9aabe9236d335989f3b"
       ]
     },
     {
-      "typeId": 3,
+      "type": "enum std::option::Option<struct std::string::String>",
+      "concreteTypeId": "7c06d929390a9aeeb8ffccf8173ac0d101a9976d99dda01cce74541a81e75ac0",
+      "metadataTypeId": 0,
+      "typeArguments": [
+        "9a7f1d3e963c10e0a4ea70a8e20a4813d1dc5682e28f74cb102ae50d32f7f98c"
+      ]
+    },
+    {
+      "type": "enum std::option::Option<u64>",
+      "concreteTypeId": "d852149004cc9ec0bbe7dc4e37bffea1d41469b759512b6136f2e865a4c06e7d",
+      "metadataTypeId": 0,
+      "typeArguments": [
+        "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
+      ]
+    },
+    {
+      "type": "enum std::option::Option<u8>",
+      "concreteTypeId": "2da102c46c7263beeed95818cd7bee801716ba8303dddafdcd0f6c9efda4a0f1",
+      "metadataTypeId": 0,
+      "typeArguments": [
+        "c89951a24c6ca28c13fd1cfdc646b2b656d69e61a92b91023be7eb58eb914b6b"
+      ]
+    },
+    {
+      "type": "struct std::asset_id::AssetId",
+      "concreteTypeId": "c0710b6731b1dd59799cf6bef33eee3b3b04a2e40e80a0724090215bbf2ca974",
+      "metadataTypeId": 3
+    },
+    {
+      "type": "struct std::string::String",
+      "concreteTypeId": "9a7f1d3e963c10e0a4ea70a8e20a4813d1dc5682e28f74cb102ae50d32f7f98c",
+      "metadataTypeId": 6
+    },
+    {
+      "type": "u64",
+      "concreteTypeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
+    },
+    {
+      "type": "u8",
+      "concreteTypeId": "c89951a24c6ca28c13fd1cfdc646b2b656d69e61a92b91023be7eb58eb914b6b"
+    }
+  ],
+  "metadataTypes": [
+    {
+      "type": "enum std::option::Option",
+      "metadataTypeId": 0,
+      "components": [
+        {
+          "name": "None",
+          "typeId": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d"
+        },
+        {
+          "name": "Some",
+          "typeId": 1
+        }
+      ],
+      "typeParameters": [
+        1
+      ]
+    },
+    {
       "type": "generic T",
-      "components": null,
-      "typeParameters": null
+      "metadataTypeId": 1
     },
     {
-      "typeId": 4,
       "type": "raw untyped ptr",
-      "components": null,
-      "typeParameters": null
+      "metadataTypeId": 2
     },
     {
-      "typeId": 5,
-      "type": "struct AssetId",
+      "type": "struct std::asset_id::AssetId",
+      "metadataTypeId": 3,
       "components": [
         {
           "name": "bits",
-          "type": 1,
-          "typeArguments": null
+          "typeId": "7c5ee1cecf5f8eacd1284feb5f0bf2bdea533a51e2f0c9aabe9236d335989f3b"
         }
-      ],
-      "typeParameters": null
+      ]
     },
     {
-      "typeId": 6,
-      "type": "struct Bytes",
+      "type": "struct std::bytes::Bytes",
+      "metadataTypeId": 4,
       "components": [
         {
           "name": "buf",
-          "type": 7,
-          "typeArguments": null
+          "typeId": 5
         },
         {
           "name": "len",
-          "type": 9,
-          "typeArguments": null
+          "typeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
         }
-      ],
-      "typeParameters": null
+      ]
     },
     {
-      "typeId": 7,
-      "type": "struct RawBytes",
+      "type": "struct std::bytes::RawBytes",
+      "metadataTypeId": 5,
       "components": [
         {
           "name": "ptr",
-          "type": 4,
-          "typeArguments": null
+          "typeId": 2
         },
         {
           "name": "cap",
-          "type": 9,
-          "typeArguments": null
+          "typeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
         }
-      ],
-      "typeParameters": null
+      ]
     },
     {
-      "typeId": 8,
-      "type": "struct String",
+      "type": "struct std::string::String",
+      "metadataTypeId": 6,
       "components": [
         {
           "name": "bytes",
-          "type": 6,
-          "typeArguments": null
+          "typeId": 4
         }
-      ],
-      "typeParameters": null
-    },
-    {
-      "typeId": 9,
-      "type": "u64",
-      "components": null,
-      "typeParameters": null
-    },
-    {
-      "typeId": 10,
-      "type": "u8",
-      "components": null,
-      "typeParameters": null
+      ]
     }
   ],
   "functions": [
@@ -120,22 +142,11 @@
       "inputs": [
         {
           "name": "asset",
-          "type": 5,
-          "typeArguments": null
+          "concreteTypeId": "c0710b6731b1dd59799cf6bef33eee3b3b04a2e40e80a0724090215bbf2ca974"
         }
       ],
       "name": "decimals",
-      "output": {
-        "name": "",
-        "type": 2,
-        "typeArguments": [
-          {
-            "name": "",
-            "type": 10,
-            "typeArguments": null
-          }
-        ]
-      },
+      "output": "2da102c46c7263beeed95818cd7bee801716ba8303dddafdcd0f6c9efda4a0f1",
       "attributes": [
         {
           "name": "storage",
@@ -149,22 +160,11 @@
       "inputs": [
         {
           "name": "asset",
-          "type": 5,
-          "typeArguments": null
+          "concreteTypeId": "c0710b6731b1dd59799cf6bef33eee3b3b04a2e40e80a0724090215bbf2ca974"
         }
       ],
       "name": "name",
-      "output": {
-        "name": "",
-        "type": 2,
-        "typeArguments": [
-          {
-            "name": "",
-            "type": 8,
-            "typeArguments": null
-          }
-        ]
-      },
+      "output": "7c06d929390a9aeeb8ffccf8173ac0d101a9976d99dda01cce74541a81e75ac0",
       "attributes": [
         {
           "name": "storage",
@@ -178,22 +178,11 @@
       "inputs": [
         {
           "name": "asset",
-          "type": 5,
-          "typeArguments": null
+          "concreteTypeId": "c0710b6731b1dd59799cf6bef33eee3b3b04a2e40e80a0724090215bbf2ca974"
         }
       ],
       "name": "symbol",
-      "output": {
-        "name": "",
-        "type": 2,
-        "typeArguments": [
-          {
-            "name": "",
-            "type": 8,
-            "typeArguments": null
-          }
-        ]
-      },
+      "output": "7c06d929390a9aeeb8ffccf8173ac0d101a9976d99dda01cce74541a81e75ac0",
       "attributes": [
         {
           "name": "storage",
@@ -206,11 +195,7 @@
     {
       "inputs": [],
       "name": "total_assets",
-      "output": {
-        "name": "",
-        "type": 9,
-        "typeArguments": null
-      },
+      "output": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0",
       "attributes": [
         {
           "name": "storage",
@@ -224,22 +209,11 @@
       "inputs": [
         {
           "name": "asset",
-          "type": 5,
-          "typeArguments": null
+          "concreteTypeId": "c0710b6731b1dd59799cf6bef33eee3b3b04a2e40e80a0724090215bbf2ca974"
         }
       ],
       "name": "total_supply",
-      "output": {
-        "name": "",
-        "type": 2,
-        "typeArguments": [
-          {
-            "name": "",
-            "type": 9,
-            "typeArguments": null
-          }
-        ]
-      },
+      "output": "d852149004cc9ec0bbe7dc4e37bffea1d41469b759512b6136f2e865a4c06e7d",
       "attributes": [
         {
           "name": "storage",
@@ -253,26 +227,19 @@
       "inputs": [
         {
           "name": "name",
-          "type": 8,
-          "typeArguments": null
+          "concreteTypeId": "9a7f1d3e963c10e0a4ea70a8e20a4813d1dc5682e28f74cb102ae50d32f7f98c"
         },
         {
           "name": "symbol",
-          "type": 8,
-          "typeArguments": null
+          "concreteTypeId": "9a7f1d3e963c10e0a4ea70a8e20a4813d1dc5682e28f74cb102ae50d32f7f98c"
         },
         {
           "name": "decimals",
-          "type": 10,
-          "typeArguments": null
+          "concreteTypeId": "c89951a24c6ca28c13fd1cfdc646b2b656d69e61a92b91023be7eb58eb914b6b"
         }
       ],
       "name": "add_token",
-      "output": {
-        "name": "",
-        "type": 5,
-        "typeArguments": null
-      },
+      "output": "c0710b6731b1dd59799cf6bef33eee3b3b04a2e40e80a0724090215bbf2ca974",
       "attributes": [
         {
           "name": "storage",
@@ -287,22 +254,11 @@
       "inputs": [
         {
           "name": "asset_id",
-          "type": 5,
-          "typeArguments": null
+          "concreteTypeId": "c0710b6731b1dd59799cf6bef33eee3b3b04a2e40e80a0724090215bbf2ca974"
         }
       ],
       "name": "get_sub_id",
-      "output": {
-        "name": "",
-        "type": 2,
-        "typeArguments": [
-          {
-            "name": "",
-            "type": 1,
-            "typeArguments": null
-          }
-        ]
-      },
+      "output": "0c2beb9013490c4f753f2757dfe2d8340b22ce3827d596d81d249b7038033cb6",
       "attributes": [
         {
           "name": "storage",
@@ -316,21 +272,15 @@
       "inputs": [
         {
           "name": "asset_id",
-          "type": 5,
-          "typeArguments": null
+          "concreteTypeId": "c0710b6731b1dd59799cf6bef33eee3b3b04a2e40e80a0724090215bbf2ca974"
         },
         {
           "name": "amount",
-          "type": 9,
-          "typeArguments": null
+          "concreteTypeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
         }
       ],
       "name": "mint_tokens",
-      "output": {
-        "name": "",
-        "type": 0,
-        "typeArguments": null
-      },
+      "output": "2e38e77b22c314a449e91fafed92a43826ac6aa403ae6a8acb6cf58239fbaf5d",
       "attributes": [
         {
           "name": "storage",
