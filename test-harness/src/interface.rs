@@ -38,7 +38,7 @@ pub mod amm {
     pub async fn initialize_ownership(
         contract: &MiraAMM<WalletUnlocked>,
         owner: Identity,
-    ) -> FuelCallResponse<()> {
+    ) -> CallResponse<()> {
         contract
             .methods()
             .transfer_ownership(owner)

@@ -1,5 +1,5 @@
+use fuels::prelude::VariableOutputPolicy;
 use crate::utils::setup;
-use fuels::programs::call_utils::TxDependencyExtension;
 use test_harness::interface::amm::pool_metadata;
 use test_harness::interface::scripts::get_transaction_inputs_outputs;
 use test_harness::utils::common::{pool_assets_balance, MINIMUM_LIQUIDITY};
@@ -41,7 +41,7 @@ async fn swap_between_two_volatile_tokens() {
         .with_contracts(&[&amm.instance])
         .with_inputs(inputs)
         .with_outputs(outputs)
-        .append_variable_outputs(2)
+        .with_variable_output_policy(VariableOutputPolicy::Exactly(2))
         .call()
         .await
         .unwrap()
@@ -72,7 +72,7 @@ async fn swap_between_two_volatile_tokens() {
         .with_contracts(&[&amm.instance])
         .with_inputs(inputs)
         .with_outputs(outputs)
-        .append_variable_outputs(1)
+        .with_variable_output_policy(VariableOutputPolicy::Exactly(1))
         .call()
         .await
         .unwrap()
@@ -137,7 +137,7 @@ async fn swap_between_three_volatile_tokens() {
         .with_contracts(&[&amm.instance])
         .with_inputs(inputs)
         .with_outputs(outputs)
-        .append_variable_outputs(2)
+        .with_variable_output_policy(VariableOutputPolicy::Exactly(2))
         .call()
         .await
         .unwrap()
@@ -165,7 +165,7 @@ async fn swap_between_three_volatile_tokens() {
         .with_contracts(&[&amm.instance])
         .with_inputs(inputs)
         .with_outputs(outputs)
-        .append_variable_outputs(2)
+        .with_variable_output_policy(VariableOutputPolicy::Exactly(2))
         .call()
         .await
         .unwrap()
@@ -199,7 +199,7 @@ async fn swap_between_three_volatile_tokens() {
         .with_contracts(&[&amm.instance])
         .with_inputs(inputs)
         .with_outputs(outputs)
-        .append_variable_outputs(1)
+        .with_variable_output_policy(VariableOutputPolicy::Exactly(1))
         .call()
         .await
         .unwrap()
