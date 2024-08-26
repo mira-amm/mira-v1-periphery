@@ -2,7 +2,6 @@ use crate::utils::setup;
 use fuels::programs::call_utils::TxDependencyExtension;
 use test_harness::interface::amm::pool_metadata;
 use test_harness::interface::scripts::get_transaction_inputs_outputs;
-use test_harness::interface::{Asset, BurnEvent};
 use test_harness::utils::common::{pool_assets_balance, MINIMUM_LIQUIDITY};
 
 #[tokio::test]
@@ -231,7 +230,7 @@ async fn swap_between_three_volatile_tokens() {
     );
     assert_eq!(
         pool_metadata_0_after.reserve_1,
-        pool_metadata_0_before.reserve_1// - token_1_expected // TODO: should be without comment
+        pool_metadata_0_before.reserve_1 - token_1_expected
     );
     assert_eq!(
         pool_metadata_1_after.reserve_0,

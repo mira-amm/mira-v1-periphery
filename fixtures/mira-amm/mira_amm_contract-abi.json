@@ -223,6 +223,11 @@
           "name": "ProtocolFeesAreTooHigh",
           "type": 0,
           "typeArguments": null
+        },
+        {
+          "name": "PoolInvariantViolation",
+          "type": 1,
+          "typeArguments": null
         }
       ],
       "typeParameters": null
@@ -1139,7 +1144,7 @@
         "type": 32,
         "typeArguments": null
       },
-      "offset": 65176
+      "offset": 65576
     },
     {
       "name": "LP_FEE_STABLE",
@@ -1148,7 +1153,7 @@
         "type": 32,
         "typeArguments": null
       },
-      "offset": 65168
+      "offset": 65568
     }
   ]
 }
