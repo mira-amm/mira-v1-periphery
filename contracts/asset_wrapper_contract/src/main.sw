@@ -50,26 +50,6 @@ fn get_total_supply(asset_id: AssetId) -> Option<u64> {
     storage.asset_total_supply.get(asset_id).try_read()
 }
 
-#[storage(read, write)]
-fn store_asset_meta(
-    underlying_asset: AssetId,
-    name: String,
-    symbol: String,
-    decimals: u8,
-) -> AssetId {
-    let (_, wrapped_asset) = get_wrapped_asset(underlying_asset);
-    _set_name(storage.asset_name, wrapped_asset, name);
-    _set_symbol(storage.asset_symbol, wrapped_asset, symbol);
-    storage.asset_decimals.insert(wrapped_asset, decimals);
-    wrapped_asset
-}
-
-#[storage(read, write)]
-fn init_wrapped_asset(wrapped_asset: AssetId) {
-    storage.asset_total_supply.insert(wrapped_asset, 0);
-    storage.total_assets.write(storage.total_assets.read() + 1);
-}
-
 impl SRC5 for Contract {
     #[storage(read)]
     fn owner() -> State {
@@ -115,12 +95,16 @@ impl AssetWrapper for Contract {
     }
 
     #[storage(read, write)]
-    fn update_wrapped_asset_config(underlying_asset: AssetId, name: String, symbol: String, decimals: u8) -> AssetId {
+    fn init_wrapped_asset(underlying_asset: AssetId, name: String, symbol: String, decimals: u8) -> AssetId {
         only_owner();
-        let wrapped_asset = store_asset_meta(underlying_asset, name, symbol, decimals);
-        if !asset_exists(wrapped_asset) {
-            init_wrapped_asset(wrapped_asset);
-        }
+
+        let (_, wrapped_asset) = get_wrapped_asset(underlying_asset);
+        _set_name(storage.asset_name, wrapped_asset, name);
+        _set_symbol(storage.asset_symbol, wrapped_asset, symbol);
+        storage.asset_decimals.insert(wrapped_asset, decimals);
+        storage.asset_total_supply.insert(wrapped_asset, 0);
+        storage.total_assets.write(storage.total_assets.read() + 1);
+
         wrapped_asset
     }
 
