@@ -63,9 +63,3 @@ impl PoolMetadata {
         }
     }
 }
-
-pub struct WrappedAssetMetadata {
-    pub underlying_asset: AssetId,
-    pub sub_id: b256,
-    pub decimals: u8,
-}
