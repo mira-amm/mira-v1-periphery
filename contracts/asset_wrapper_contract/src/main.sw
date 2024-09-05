@@ -101,7 +101,12 @@ impl AssetWrapper for Contract {
     }
 
     #[storage(read, write)]
-    fn init_wrapped_asset(underlying_asset: AssetId, name: String, symbol: String, decimals: u8) -> AssetId {
+    fn init_wrapped_asset(
+        underlying_asset: AssetId,
+        name: String,
+        symbol: String,
+        decimals: u8,
+    ) -> AssetId {
         only_owner();
 
         let (_, wrapped_asset) = get_wrapped_asset(underlying_asset);
@@ -110,7 +115,9 @@ impl AssetWrapper for Contract {
         storage.asset_decimals.insert(wrapped_asset, decimals);
         storage.asset_total_supply.insert(wrapped_asset, 0);
         storage.total_assets.write(storage.total_assets.read() + 1);
-        storage.wrapped_to_underlying.insert(wrapped_asset, underlying_asset);
+        storage
+            .wrapped_to_underlying
+            .insert(wrapped_asset, underlying_asset);
 
         wrapped_asset
     }
@@ -122,7 +129,10 @@ impl AssetWrapper for Contract {
         let underlying_asset = msg_asset_id();
         let amount = msg_amount();
 
-        require(wrapped_asset_exists(underlying_asset), "Wrapped asset doesn't exist");
+        require(
+            wrapped_asset_exists(underlying_asset),
+            "Wrapped asset doesn't exist",
+        );
         let (wrapped_sub_id, wrapped_asset) = get_wrapped_asset(underlying_asset);
 
         mint_to(sender, wrapped_sub_id, amount);
