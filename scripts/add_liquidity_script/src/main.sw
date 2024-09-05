@@ -2,11 +2,12 @@ script;
 
 use interfaces::{data_structures::{Asset, PoolId}, mira_amm::MiraAMM};
 use math::pool_math::get_deposit_amounts;
-use utils::blockchain_utils::check_deadline;
+use utils::blockchain_utils::{check_deadline, wrap_if_needed};
 use std::asset::transfer;
 
 configurable {
     AMM_CONTRACT_ID: ContractId = ContractId::from(0x0000000000000000000000000000000000000000000000000000000000000000),
+    ASSET_WRAPPER_CONTRACT_ID: ContractId = ContractId::from(0x0000000000000000000000000000000000000000000000000000000000000000),
 }
 
 fn main(
@@ -36,6 +37,8 @@ fn main(
             .reserve_1,
     );
 
+    wrap_if_needed(ASSET_WRAPPER_CONTRACT_ID, pool_id.0, amount_0);
+    wrap_if_needed(ASSET_WRAPPER_CONTRACT_ID, pool_id.1, amount_1);
     transfer(Identity::ContractId(AMM_CONTRACT_ID), pool_id.0, amount_0);
     transfer(Identity::ContractId(AMM_CONTRACT_ID), pool_id.1, amount_1);
 
