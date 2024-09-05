@@ -15,5 +15,8 @@ abi AssetWrapper {
 
     #[payable]
     #[storage(read, write)]
-    fn unwrap(underlying_asset: AssetId);
+    fn unwrap() -> AssetId;
+
+    #[storage(read)]
+    fn get_underlying_asset(wrapped_asset: AssetId) -> Option<AssetId>;
 }

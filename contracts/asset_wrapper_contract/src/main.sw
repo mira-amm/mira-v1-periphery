@@ -27,11 +27,17 @@ storage {
     asset_decimals: StorageMap<AssetId, u8> = StorageMap {},
     asset_name: StorageMap<AssetId, StorageString> = StorageMap {},
     asset_symbol: StorageMap<AssetId, StorageString> = StorageMap {},
+    wrapped_to_underlying: StorageMap<AssetId, AssetId> = StorageMap {},
 }
 
 fn get_wrapped_asset(underlying_asset: AssetId) -> (b256, AssetId) {
     let sub_id: b256 = underlying_asset.into();
     (sub_id, AssetId::new(ContractId::this(), sub_id))
+}
+
+#[storage(read)]
+fn get_underlying_asset(wrapped_asset: AssetId) -> Option<AssetId> {
+    storage.wrapped_to_underlying.get(wrapped_asset).try_read()
 }
 
 #[storage(read)]
@@ -104,6 +110,7 @@ impl AssetWrapper for Contract {
         storage.asset_decimals.insert(wrapped_asset, decimals);
         storage.asset_total_supply.insert(wrapped_asset, 0);
         storage.total_assets.write(storage.total_assets.read() + 1);
+        storage.wrapped_to_underlying.insert(wrapped_asset, underlying_asset);
 
         wrapped_asset
     }
@@ -129,14 +136,13 @@ impl AssetWrapper for Contract {
 
     #[payable]
     #[storage(read, write)]
-    fn unwrap(underlying_asset: AssetId) {
+    fn unwrap() -> AssetId {
         let sender = msg_sender().unwrap();
-        let deposited_asset = msg_asset_id();
+        let wrapped_asset = msg_asset_id();
         let amount = msg_amount();
 
-        let (wrapped_sub_id, wrapped_asset) = get_wrapped_asset(underlying_asset);
-        require(deposited_asset == wrapped_asset, "Deposited asset doesn't match the wrapped one");
-        require(wrapped_asset_exists(underlying_asset), "Wrapped asset doesn't exist");
+        let underlying_asset = get_underlying_asset(wrapped_asset).unwrap();
+        let (wrapped_sub_id, _) = get_wrapped_asset(underlying_asset);
 
         burn(wrapped_sub_id, amount);
         transfer(sender, underlying_asset, amount);
@@ -145,5 +151,11 @@ impl AssetWrapper for Contract {
         storage
             .asset_total_supply
             .insert(wrapped_asset, old_total_supply - amount);
+        underlying_asset
+    }
+
+    #[storage(read)]
+    fn get_underlying_asset(wrapped_asset: AssetId) -> Option<AssetId> {
+        get_underlying_asset(wrapped_asset)
     }
 }
