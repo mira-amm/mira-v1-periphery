@@ -6,7 +6,7 @@ use std::hash::*;
 
 /// Validates that the provided deadline hasn't passed yet
 pub fn check_deadline(deadline: u32) {
-    require(deadline > height(), "Deadline passed");
+    require(deadline >= height(), "Deadline passed");
 }
 
 /// Builds and returns an LP sub id and asset id for the provided pool id
