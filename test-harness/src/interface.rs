@@ -153,8 +153,6 @@ pub mod mock {
 pub mod scripts {
     use super::*;
 
-    pub const MAXIMUM_INPUT_AMOUNT: u64 = 100_000;
-
     pub async fn get_transaction_inputs_outputs(
         wallet: &WalletUnlocked,
         assets: &Vec<(AssetId, u64)>,

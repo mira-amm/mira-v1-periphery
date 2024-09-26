@@ -2,11 +2,12 @@ script;
 
 use interfaces::{data_structures::PoolId, mira_amm::MiraAMM};
 use math::pool_math::get_amounts_in;
-use utils::blockchain_utils::check_deadline;
+use utils::blockchain_utils::{check_deadline, wrap_if_needed};
 use std::{asset::transfer, bytes::Bytes};
 
 configurable {
     AMM_CONTRACT_ID: ContractId = ContractId::from(0x0000000000000000000000000000000000000000000000000000000000000000),
+    ASSET_WRAPPER_CONTRACT_ID: ContractId = ContractId::from(0x0000000000000000000000000000000000000000000000000000000000000000),
 }
 
 fn main(
@@ -23,6 +24,7 @@ fn main(
     let (first_amount_in, first_asset) = amounts_in.get(amounts_in.len() - 1).unwrap();
     require(first_amount_in <= amount_in_max, "Exceeding input amount");
 
+    wrap_if_needed(ASSET_WRAPPER_CONTRACT_ID, first_asset, first_amount_in);
     transfer(
         Identity::ContractId(AMM_CONTRACT_ID),
         first_asset,
