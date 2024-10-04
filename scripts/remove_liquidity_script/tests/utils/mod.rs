@@ -1,9 +1,10 @@
 use std::str::FromStr;
 
 use fuels::accounts::wallet::WalletUnlocked;
-use fuels::types::ContractId;
+use fuels::prelude::Address;
+use fuels::types::{ContractId, Identity};
 use test_harness::data_structures::{MiraAMMContract, WalletAssetConfiguration};
-use test_harness::interface::amm::create_pool;
+use test_harness::interface::amm::{create_pool, initialize_ownership};
 use test_harness::interface::mock::{
     add_token, deploy_mock_token_contract, get_sub_id, mint_tokens,
 };
@@ -27,6 +28,7 @@ pub async fn setup() -> (
     let (wallet, _asset_ids, provider) =
         setup_wallet_and_provider(&WalletAssetConfiguration::default()).await;
     let amm = deploy_amm(&wallet).await;
+    initialize_ownership(&amm.instance, Identity::Address(Address::default())).await;
     let (token_contract_id, token_contract) = deploy_mock_token_contract(&wallet).await;
 
     let token_a_id = add_token(&token_contract, "TOKEN_A".to_string(), "TKA".to_string(), 9)
