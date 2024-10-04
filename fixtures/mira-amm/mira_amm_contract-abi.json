@@ -64,6 +64,14 @@
       ]
     },
     {
+      "type": "enum std::option::Option<struct std::bytes::Bytes>",
+      "concreteTypeId": "50b87f43f0097a720c18f3fb2100c4502484b716128f2706b3e187aa35a6dfe8",
+      "metadataTypeId": 9,
+      "typeArguments": [
+        "cdd87b7d12fe505416570c294c884bca819364863efe3bf539245fa18515fbbb"
+      ]
+    },
+    {
       "type": "enum std::option::Option<struct std::contract_id::ContractId>",
       "concreteTypeId": "0d79387ad3bacdc3b7aad9da3a96f4ce60d9a1b6002df254069ad95a3931d5c8",
       "metadataTypeId": 9,
@@ -1031,7 +1039,7 @@
         },
         {
           "name": "data",
-          "concreteTypeId": "cdd87b7d12fe505416570c294c884bca819364863efe3bf539245fa18515fbbb"
+          "concreteTypeId": "50b87f43f0097a720c18f3fb2100c4502484b716128f2706b3e187aa35a6dfe8"
         }
       ],
       "name": "swap",
@@ -1137,12 +1145,12 @@
     {
       "name": "LP_FEE_VOLATILE",
       "concreteTypeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0",
-      "offset": 75344
+      "offset": 61520
     },
     {
       "name": "LP_FEE_STABLE",
       "concreteTypeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0",
-      "offset": 75336
+      "offset": 61512
     }
   ]
 }
