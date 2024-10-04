@@ -6,7 +6,7 @@ use utils::blockchain_utils::check_deadline;
 use std::asset::transfer;
 
 configurable {
-    AMM_CONTRACT_ID: ContractId = ContractId::from(0x0000000000000000000000000000000000000000000000000000000000000000),
+    AMM_CONTRACT_ID: ContractId = ContractId::zero(),
 }
 
 fn main(
