@@ -67,16 +67,26 @@ pub async fn setup() -> (
     let add_liquidity_script_configurables = AddLiquidityScriptConfigurables::default()
         .with_AMM_CONTRACT_ID(ContractId::from_str(&amm.id.to_string()).unwrap())
         .unwrap();
-    let add_liquidity_script_instance =
+    let mut add_liquidity_script_instance =
         AddLiquidityScript::new(wallet.clone(), ADD_LIQUIDITY_SCRIPT_BINARY_PATH)
             .with_configurables(add_liquidity_script_configurables);
+
+    add_liquidity_script_instance
+        .convert_into_loader()
+        .await
+        .unwrap();
 
     let remove_liquidity_script_configurables = RemoveLiquidityScriptConfigurables::default()
         .with_AMM_CONTRACT_ID(ContractId::from_str(&amm.id.to_string()).unwrap())
         .unwrap();
-    let remove_liquidity_script_instance =
+    let mut remove_liquidity_script_instance =
         RemoveLiquidityScript::new(wallet.clone(), REMOVE_LIQUIDITY_SCRIPT_BINARY_PATH)
             .with_configurables(remove_liquidity_script_configurables);
+
+    remove_liquidity_script_instance
+        .convert_into_loader()
+        .await
+        .unwrap();
 
     (
         add_liquidity_script_instance,

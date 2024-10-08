@@ -59,8 +59,12 @@ pub async fn setup() -> (
     let configurables = AddLiquidityScriptConfigurables::default()
         .with_AMM_CONTRACT_ID(ContractId::from_str(&amm.id.to_string()).unwrap())
         .unwrap();
-    let script_instance = AddLiquidityScript::new(wallet.clone(), ADD_LIQUIDITY_SCRIPT_BINARY_PATH)
-        .with_configurables(configurables);
+
+    let mut script_instance =
+        AddLiquidityScript::new(wallet.clone(), ADD_LIQUIDITY_SCRIPT_BINARY_PATH)
+            .with_configurables(configurables);
+
+    script_instance.convert_into_loader().await.unwrap();
 
     (script_instance, amm, pool_id, wallet, deadline)
 }

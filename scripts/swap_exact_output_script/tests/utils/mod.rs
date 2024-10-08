@@ -90,16 +90,26 @@ pub async fn setup() -> (
     let add_liquidity_script_configurables = AddLiquidityScriptConfigurables::default()
         .with_AMM_CONTRACT_ID(ContractId::from_str(&amm.id.to_string()).unwrap())
         .unwrap();
-    let add_liquidity_script_instance =
+    let mut add_liquidity_script_instance =
         AddLiquidityScript::new(wallet.clone(), ADD_LIQUIDITY_SCRIPT_BINARY_PATH)
             .with_configurables(add_liquidity_script_configurables);
+
+    add_liquidity_script_instance
+        .convert_into_loader()
+        .await
+        .unwrap();
 
     let swap_exact_output_script_configurables = SwapExactOutputScriptConfigurables::default()
         .with_AMM_CONTRACT_ID(ContractId::from_str(&amm.id.to_string()).unwrap())
         .unwrap();
-    let swap_exact_output_script_instance =
+    let mut swap_exact_output_script_instance =
         SwapExactOutputScript::new(wallet.clone(), SWAP_EXACT_OUTPUT_SCRIPT_BINARY_PATH)
             .with_configurables(swap_exact_output_script_configurables);
+
+    swap_exact_output_script_instance
+        .convert_into_loader()
+        .await
+        .unwrap();
 
     (
         add_liquidity_script_instance,
